@@ -294,7 +294,6 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 
 		Node spread(boolean isSparse) {
 			NonLeafNode parent = new NonLeafNode();
-			parent.children.add(root);
 			int limit;
 			if (isSparse) {
 				limit = order / 2 + 1;
@@ -303,6 +302,9 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 			}
 			int i;
 			NonLeafNode node = new NonLeafNode();
+			node.keys.addAll(keys.subList(0, limit - 1));
+			node.children.addAll(children.subList(0, limit));
+			parent.children.add(node);
 			for (i = limit; i + limit < children.size() - 1; i += limit) {
 				node = new NonLeafNode();
 				node.keys.addAll(keys.subList(i, i + limit - 1));
@@ -314,8 +316,6 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				node.keys.addAll(keys.subList(i - 1, getKeySize()));
 				node.children.addAll(children.subList(i, getKeySize() + 1));
 			}
-			children.subList(limit, getKeySize() + 1).clear();
-			keys.subList(limit - 1, getKeySize()).clear();
 
 			if (node.isOverflow()) {
 				Node sibling = node.split();
@@ -481,11 +481,19 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 
 		Node spread(boolean isSparse) {
 			NonLeafNode parent = new NonLeafNode();
-			parent.children.add(root);
-			int limit = order;
+			int limit;
+			if (isSparse) {
+				limit = (order + 1) / 2;
+			} else {
+				limit = order;
+			}
 			int i;
-			LeafNode last = (LeafNode) root;
-			LeafNode node = (LeafNode) root;
+			LeafNode last;
+			LeafNode node;
+			node = new LeafNode();
+			node.keys.addAll(keys.subList(0, limit));
+			last = node;
+			parent.children.add(node);
 			for (i = limit; i + limit < keys.size() - 1; i += limit) {
 				node = new LeafNode();
 				node.keys.addAll(keys.subList(i, i + limit));
@@ -503,7 +511,6 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				parent.keys.add(sibling.getFirstLeafKey());
 				parent.children.add(sibling);
 			}
-			keys.subList(limit, getKeySize()).clear();
 
 			return parent;
 		}
