@@ -209,8 +209,6 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				after.append(child.keys);
 			}
 			if (!before.equals(after)) {
-				// System.out.println("before: " + before.toString());
-				// System.out.println("after: " + after.toString());
 				beforeNodes.insert(0, "\n");
 				afterNodes.insert(0, "\n");
 				beforeNodes.insert(0, before);
@@ -332,9 +330,11 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 
 		@Override
 		boolean isUnderflow() {
-			return children.size() < order / 2; // roof of (n + 1) / 2
-			// even order e.g. 4, roof of (n + 1) / 2 = 3, split when children < 3 = 2 + 1
-			// odd order e.g. 3, roof of (n + 1) / 2 = 2, split when children < 2 = 1 + 1
+			return children.size() < order / 2 + 1; // roof of (n + 1) / 2
+			// even order e.g. 24, roof of (n + 1) / 2 = 13,
+			// split when children < 13 = 12 + 1
+			// odd order e.g. 13, roof of (n + 1) / 2 = 7,
+			// split when children < 7 = 6 + 1
 		}
 
 		int getIndex(Integer key) {
@@ -459,7 +459,7 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 
 		@Override
 		void coalesce(Node sibling) {
-			System.out.println("Leaf coalesce");
+			// System.out.println("Leaf coalesce");
 			LeafNode node = (LeafNode) sibling;
 			keys.addAll(node.keys);
 			next = node.next;
