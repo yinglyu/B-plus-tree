@@ -76,14 +76,15 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 		String before = root.toString();
 		boolean res = root.insert(key);
 		String after = root.toString();
+		String rtMark = "{Root}";
 
 		if (!before.equals(after)) {
-			beforeNodes.insert(0, before + "\n");
-			afterNodes.insert(0, after + "\n");
+			beforeNodes.insert(0, rtMark + before + rtMark + "\n");
+			afterNodes.insert(0, rtMark + after + rtMark + "\n");
 		}
 
 		System.out.print("before: " + beforeNodes.toString() + "\n");
-		System.out.print("after: " + afterNodes.toString() + "\n");
+		System.out.print("after : " + afterNodes.toString() + "\n");
 
 		return res;
 	}
@@ -101,10 +102,11 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 		String before = root.toString();
 		boolean res = root.delete(key);
 		String after = root.toString();
+		String rtMark = "{Root}";
 
 		if (!before.equals(after)) {
-			beforeNodes.insert(0, before + "\n");
-			afterNodes.insert(0, after + "\n");
+			beforeNodes.insert(0, rtMark + before + rtMark + "\n");
+			afterNodes.insert(0, rtMark + after + rtMark + "\n");
 		}
 		System.out.print("before: " + beforeNodes.toString() + "\n");
 		System.out.print("after: " + afterNodes.toString() + "\n");
@@ -224,7 +226,7 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 
 			StringBuilder before = new StringBuilder();
 			StringBuilder after = new StringBuilder();
-			before.append(child.keys);
+			before.append(child);
 
 			boolean res = child.insert(key);
 
@@ -247,13 +249,11 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				root = newRoot;
 				after.insert(0, sibling + "\n");
 				after.insert(0, this);
-			} else {
-				after.insert(0, "\n");
 			}
 
 			if (!before.equals(after)) {
-				beforeNodes.insert(0, before);
-				afterNodes.insert(0, after);
+				beforeNodes.insert(0, before + "\n");
+				afterNodes.insert(0, after + "\n");
 			}
 
 			return res;
@@ -279,7 +279,6 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 
 		@Override
 		Node split() {
-			// System.out.println("nonLeaf Split");
 			int fromIndex = getKeySize() / 2 + 1, toIndex = getKeySize();
 			NonLeafNode sibling = new NonLeafNode();
 			sibling.keys.addAll(keys.subList(fromIndex, toIndex));
