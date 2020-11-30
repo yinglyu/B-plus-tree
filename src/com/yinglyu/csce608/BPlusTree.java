@@ -105,11 +105,11 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 		String rtMark = "{Root}";
 
 		if (!before.equals(after)) {
-			beforeNodes.insert(0, rtMark + before + rtMark + "\n");
-			afterNodes.insert(0, rtMark + after + rtMark + "\n");
+			beforeNodes.insert(0, rtMark + before + rtMark + ";\n");
+			afterNodes.insert(0, rtMark + after + rtMark + ";\n");
 		}
 		System.out.print("before: " + beforeNodes.toString() + "\n");
-		System.out.print("after: " + afterNodes.toString() + "\n");
+		System.out.print("after : " + afterNodes.toString() + "\n");
 		return res;
 	}
 
@@ -166,7 +166,7 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 			StringBuilder before = new StringBuilder();
 			StringBuilder after = new StringBuilder();
 
-			before.append(child.keys);
+			before.append(child);
 			boolean res = child.delete(key);
 			if (!res) {
 				return res;
@@ -176,7 +176,6 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 			int loc = getIndex(key);
 			if (loc >= 0) {
 				keys.set(loc, child.getFirstLeafKey());
-				// System.out.print(keys.get(loc));
 			}
 
 			if (child.isUnderflow()) {
@@ -185,9 +184,9 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				Node right = childLeftSibling != null ? child : childRightSibling;
 
 				if (childLeftSibling != null) {
-					before.insert(0, childLeftSibling.keys);
+					before.insert(0, childLeftSibling);
 				} else if (childRightSibling != null) {
-					before.append(childRightSibling.keys);
+					before.append(childRightSibling);
 				}
 
 				left.coalesce(right);
@@ -195,22 +194,22 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				if (left.isOverflow()) {
 					Node sibling = left.split();
 					insertChild(sibling.getFirstLeafKey(), sibling);
-					after.append(sibling.keys);
+					after.append(sibling);
 				}
 
 				if (root.getKeySize() == 0) {
 					root = left;
-					System.out.println("level down");
+					// System.out.println("level down");
 				} else {
-					after.insert(0, left.keys);
+					after.insert(0, left);
 				}
 
 			} else {
-				after.append(child.keys);
+				after.append(child);
 			}
-			if (!before.equals(after)) {
-				beforeNodes.insert(0, "\n");
-				afterNodes.insert(0, "\n");
+			if (!before.toString().equals(after.toString())) {
+				beforeNodes.insert(0, ";\n");
+				afterNodes.insert(0, ";\n");
 				beforeNodes.insert(0, before);
 				afterNodes.insert(0, after);
 
@@ -245,13 +244,13 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 				newRoot.children.add(this);
 				newRoot.children.add(sibling);
 				root = newRoot;
-				after.insert(0, sibling + "\n");
+				after.insert(0, sibling + ";\n");
 				after.insert(0, this);
 			}
 
-			if (!before.equals(after)) {
-				beforeNodes.insert(0, before + "\n");
-				afterNodes.insert(0, after + "\n");
+			if (!before.toString().equals(after.toString())) {
+				beforeNodes.insert(0, before + ";\n");
+				afterNodes.insert(0, after + ";\n");
 			}
 
 			return res;
