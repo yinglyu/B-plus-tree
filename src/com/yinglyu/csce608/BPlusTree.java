@@ -69,6 +69,14 @@ public class BPlusTree<Integer extends Comparable<? super Integer>> {
 		}
 	}
 
+	public Integer search(Integer key) {
+		if (root.search(key)) {
+			return key;
+		} else {
+			return null;
+		}
+	}
+
 	public boolean insert(Integer key) {
 		beforeNodes = new StringBuilder();
 		afterNodes = new StringBuilder();
